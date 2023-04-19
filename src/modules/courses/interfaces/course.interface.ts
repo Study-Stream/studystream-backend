@@ -1,8 +1,9 @@
 import { Document } from 'mongoose';
 
 export interface Course extends Document {
-    readonly course_name: string;
-    readonly course_number: string;
-    readonly course_description: string;
-    readonly join_code: string;
+    course_name: string;
+    course_number: string;
+    course_description: string;
+    join_code: string;
+    posts: any;
 }
