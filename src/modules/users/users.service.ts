@@ -35,6 +35,7 @@ export class UsersService {
         return userNewCourse;
     }
 
+    // get posts from courses
     async getPostsfromCourses(email: string): Promise<any> {
         const user = await this.usersModel.findOne({ email }).exec();
         const allUserCourses = await this.courseService.getCoursesByCourseIds(user.courses);
@@ -56,6 +57,7 @@ export class UsersService {
 
     }
 
+    // delete course
     async deleteCourse(email: string, courseId: string): Promise<any> {
         const user = await this.usersModel.findOneAndUpdate({ email }, { $pull: { courses: courseId } }, { new: true });
         return user;

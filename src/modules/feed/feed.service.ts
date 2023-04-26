@@ -8,6 +8,4 @@ import { CoursesService } from '../courses/courses.service';
 export class FeedService {
 
     constructor(@InjectModel('Feed') private readonly feedModel: Model<User>) { }
-
-
 }

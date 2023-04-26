@@ -5,9 +5,4 @@ import { CreateUserDTO } from './dto/create-users.dto';
 @Controller('feed')
 export class FeedController {
     constructor(private feedService: FeedService) {}
-
-    
-
-
-    
 }

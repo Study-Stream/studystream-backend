@@ -14,9 +14,10 @@ export class CoursesService {
         @Inject(forwardRef(() => UsersService)) private readonly usersService: UsersService,
     ) { }
 
+    // create course
     async create(createCourseDto: any): Promise<any> {
         console.log('Create course DTO: ' + JSON.stringify(createCourseDto));
-        // Generate a join code for the course that has not been used before (unique). They are 6 alphanumeric characters
+        // generate a join code for the course that has not been used before (unique). they are 6 alphanumeric characters
         let joinCode = '';
         let isValidJoinCode = false;
         while (!isValidJoinCode) {
@@ -33,6 +34,7 @@ export class CoursesService {
         return course.save();
     }
 
+    // add post
     async addPost(courseId: string, createPostDto: any): Promise<any> {
         const course = await this.courseModel.findById(courseId);
         if (!course) {
@@ -56,6 +58,7 @@ export class CoursesService {
         return createPostDto;
     }
 
+    // vote post for course
     async votePost(courseId: string, postId: string, userId: string, vote: number): Promise<any> {
         const course = await this.courseModel.findById(courseId);
 
@@ -95,6 +98,7 @@ export class CoursesService {
         return course;
     }
 
+    // get video for course
     async getCourseVideo(videoId: string): Promise<any> {
         console.log('Video ID: ' + videoId);
         const ytdl = require('ytdl-core');
@@ -136,11 +140,13 @@ export class CoursesService {
         ;
     }
 
+    // get course by id
     async getCoursesByCourseIds(courseIds: string[]): Promise<any[]> {
         const courses = await this.courseModel.find({ _id: { $in: courseIds } }).exec();
         return courses;
     }
-    // get a course by join code
+
+    // get course by join code
     async getCourseByJoinCode(joinCode: string): Promise<any> {
         const course = await this.courseModel.findOne({ join_code: joinCode }).exec();
         return course;

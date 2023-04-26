@@ -7,6 +7,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 export class CoursesController {
   constructor(private courseService: CoursesService) {}
 
+  // create a course
   @Post('/create')
   async createCourse(@Res() res, @Body() createCourseDto: any) {
     const course = await this.courseService.create(createCourseDto);
@@ -16,6 +17,7 @@ export class CoursesController {
     });
   }
 
+  // get video from url
   @Get('/video')
   async getVideoUrl(@Res() res, @Query('url') url: string) {
     const extractVideoId = (url) => {
@@ -30,6 +32,7 @@ export class CoursesController {
     });
   }
 
+  // add post to course
   @Post('/add-post')
   async addPostToCourse(
     @Res() res,
@@ -44,6 +47,7 @@ export class CoursesController {
     });
   }
 
+  // vote for post
   @Post('/vote-post')
   async votePost(
     @Res() res,
@@ -57,6 +61,7 @@ export class CoursesController {
     });
   }
 
+  // get courses
   @Post('/getCourses')
   async getCoursesByCourseIds(@Res() res, @Body() body: any) {
     const { courseIds } = body;
@@ -67,6 +72,7 @@ export class CoursesController {
     });
   }
 
+  // get course by id
   @Get('/:id')
   async getCourse(@Res() res, @Param('id') id: string) {
     try {
@@ -86,14 +92,14 @@ export class CoursesController {
   }
 
   @Get(':id/posts')
-async getCoursePosts(@Param('id') id: string): Promise<any> {
-  const course = await this.courseService.findOne(id);
-  if (!course) {
-    throw new NotFoundException(`Course with ID "${id}" not found`);
-  }
+  async getCoursePosts(@Param('id') id: string): Promise<any> {
+    const course = await this.courseService.findOne(id);
+    if (!course) {
+      throw new NotFoundException(`Course with ID "${id}" not found`);
+    }
 
-  const posts = course.posts.sort((a, b) => b.createdAt - a.createdAt);
-  return posts;
-}
+    const posts = course.posts.sort((a, b) => b.createdAt - a.createdAt);
+    return posts;
+  }
 
 }

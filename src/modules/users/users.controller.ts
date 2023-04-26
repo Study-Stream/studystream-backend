@@ -35,6 +35,7 @@ export class UsersController {
         });
     }
 
+    // get posts from courses
     @Get('/posts')
     async getPostsfromCourses(@Res() res, @Query('email') email) {
         const user = await this.usersService.getPostsfromCourses(email);

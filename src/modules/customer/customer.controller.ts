@@ -16,14 +16,14 @@ export class CustomerController {
         })
     }
 
-    // Retrieve customers list
+    // retrieve customers list
     @Get('customers')
     async getAllCustomer(@Res() res) {
         const customers = await this.customerService.getAllCustomer();
         return res.status(HttpStatus.OK).json(customers);
     }
 
-    // Fetch a particular customer using ID
+    // fetch a particular customer using id
     @Get('customer/:customerID')
     async getCustomer(@Res() res, @Param('customerID') customerID) {
         const customer = await this.customerService.getCustomer(customerID);
@@ -31,7 +31,7 @@ export class CustomerController {
         return res.status(HttpStatus.OK).json(customer);
     }
 
-    // Update a customer's details
+    // update a customer's details
     @Put('/update')
     async updateCustomer(@Res() res, @Query('customerID') customerID, @Body() createCustomerDTO: CreateCustomerDTO) {
         const customer = await this.customerService.updateCustomer(customerID, createCustomerDTO);
@@ -42,7 +42,7 @@ export class CustomerController {
         });
     }
 
-    // Delete a customer
+    // delete a customer
     @Delete('/delete')
     async deleteCustomer(@Res() res, @Query('customerID') customerID) {
         const customer = await this.customerService.deleteCustomer(customerID);
