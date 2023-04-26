@@ -40,6 +40,19 @@ export class CoursesController {
     const post = await this.courseService.addPost(courseId, createPostDto);
     return res.status(HttpStatus.OK).json({
       message: 'Post has been added to course successfully',
+      course: post,
+    });
+  }
+
+  @Post('/vote-post')
+  async votePost(
+    @Res() res,
+    @Body() body: any
+  ) {
+    const { courseId, postId, userId, vote } = body;
+    const post = await this.courseService.votePost(courseId, postId, userId, vote);
+    return res.status(HttpStatus.OK).json({
+      message: 'Post has been voted on successfully',
       post,
     });
   }

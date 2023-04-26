@@ -12,7 +12,7 @@ export class CoursesService {
     constructor(
         @InjectModel('Courses') private readonly courseModel: Model<Course>,
         @Inject(forwardRef(() => UsersService)) private readonly usersService: UsersService,
-    ){}
+    ) { }
 
     async create(createCourseDto: any): Promise<any> {
         console.log('Create course DTO: ' + JSON.stringify(createCourseDto));
@@ -49,10 +49,50 @@ export class CoursesService {
         createPostDto.username = user.email.match(/^[^@]+/)?.[0] || "Random Student";
         // need to assign the video an ID that is a random 10 digit number
         createPostDto.id = Math.floor(Math.random() * 10000000000);
+        createPostDto.votes = [];
         course.posts.push(createPostDto);
         await course.save();
 
         return createPostDto;
+    }
+
+    async votePost(courseId: string, postId: string, userId: string, vote: number): Promise<any> {
+        const course = await this.courseModel.findById(courseId);
+
+        if (!course) {
+            throw new NotFoundException(`Course with ID "${courseId}" not found`);
+        }
+
+
+        const postIndex = course.posts.findIndex((post) => post.id === postId);
+
+        if (postIndex === -1) {
+            throw new NotFoundException(`Post with ID "${postId}" not found`);
+        }
+        
+        const post = course.posts[postIndex];
+        console.log("Post: " + JSON.stringify(post));
+        if (!post) {
+            throw new NotFoundException(`Post with ID "${postId}" not found`);
+        }
+
+        
+        // check if the user has already voted on this post
+        const userVote = course.posts[postIndex].votes.find((vote) => vote.userId === userId) || null;
+        console.log("User vote: " + JSON.stringify(userVote));
+        if (userVote != null) {
+            // if the user has already voted, update the vote
+            // userVote.vote = vote;
+            console.log("User has already voted")
+        } else {
+            // if the user has not voted, add a new vote
+            course.posts[postIndex].votes.push({ userId, vote });
+        }
+        
+        console.log("New Course Posts: " + JSON.stringify(course));
+        await course.save();
+
+        return course;
     }
 
     async getCourseVideo(videoId: string): Promise<any> {
@@ -92,8 +132,8 @@ export class CoursesService {
         }
         const sortedPosts = await course.posts.sort((a, b) => b.createdAt - a.createdAt)
         course.posts = sortedPosts.map((post, index) => { return { ...post, id: index } });
-        return  course;
-;
+        return course;
+        ;
     }
 
     async getCoursesByCourseIds(courseIds: string[]): Promise<any[]> {

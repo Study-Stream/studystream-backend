@@ -35,4 +35,31 @@ export class UsersService {
         return userNewCourse;
     }
 
+    async getPostsfromCourses(email: string): Promise<any> {
+        const user = await this.usersModel.findOne({ email }).exec();
+        const allUserCourses = await this.courseService.getCoursesByCourseIds(user.courses);
+        // console.log("All User Courses: " + JSON.stringify(allUserCourses));
+        let userPosts: any = [];
+        allUserCourses.forEach(course => {
+            // console.log("Posts: " + JSON.stringify(course.posts));
+            const postsOfUser = course.posts.filter(post => post.username === email.match(/^[^@]+/)?.[0]).map(post => {
+                return {
+                    ...post, courseName: course.course_name
+                    };
+            });
+            // console.log("Posts of User: " + JSON.stringify(postsOfUser), typeof postsOfUser);
+            console.log("Course Name: " + course.course_name, postsOfUser)
+            userPosts = userPosts.concat(postsOfUser);
+        });
+
+        return userPosts;
+
+    }
+
+    async deleteCourse(email: string, courseId: string): Promise<any> {
+        const user = await this.usersModel.findOneAndUpdate({ email }, { $pull: { courses: courseId } }, { new: true });
+        return user;
+    }
+
+
 }

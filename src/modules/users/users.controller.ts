@@ -35,6 +35,24 @@ export class UsersController {
         });
     }
 
+    @Get('/posts')
+    async getPostsfromCourses(@Res() res, @Query('email') email) {
+        const user = await this.usersService.getPostsfromCourses(email);
+        if (!user) throw new NotFoundException('User does not exist!');
+        return res.status(HttpStatus.OK).json(user);
+    }
+
+    // delete course from user
+    @Delete('/course/delete')
+    async deleteCourse(@Res() res, @Query('email') email, @Query('courseId') courseId) {
+        const user = await this.usersService.deleteCourse(email, courseId);
+        if (!user) throw new NotFoundException('User does not exist!');
+        return res.status(HttpStatus.OK).json({
+            message: 'Course has been deleted successfully',
+            user
+        })
+    }
+
 
     
 }
