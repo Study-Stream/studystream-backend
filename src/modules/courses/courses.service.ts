@@ -46,7 +46,9 @@ export class CoursesService {
 
         // add createdAt to the createPostDto object
         createPostDto.createdAt = new Date();
-
+        createPostDto.username = user.email.match(/^[^@]+/)?.[0] || "Random Student";
+        // need to assign the video an ID that is a random 10 digit number
+        createPostDto.id = Math.floor(Math.random() * 10000000000);
         course.posts.push(createPostDto);
         await course.save();
 
@@ -88,7 +90,10 @@ export class CoursesService {
         if (!course) {
             throw new NotFoundException(`Course with ID "${id}" not found`);
         }
-        return course;
+        const sortedPosts = await course.posts.sort((a, b) => b.createdAt - a.createdAt)
+        course.posts = sortedPosts.map((post, index) => { return { ...post, id: index } });
+        return  course;
+;
     }
 
     async getCoursesByCourseIds(courseIds: string[]): Promise<any[]> {
