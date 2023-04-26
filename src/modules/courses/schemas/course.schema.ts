@@ -5,4 +5,5 @@ export const CourseSchema = new mongoose.Schema({
     course_number: String,
     course_description: String,
     join_code: String,
+    posts: [Object]
 })

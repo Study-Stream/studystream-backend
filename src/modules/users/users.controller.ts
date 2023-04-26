@@ -16,5 +16,25 @@ export class UsersController {
         })
     }
 
+    // get a user by email
+    @Get('/')
+    async getUser(@Res() res, @Query('email') email) {
+        const user = await this.usersService.getUser(email);
+        if (!user) throw new NotFoundException('User does not exist!');
+        return res.status(HttpStatus.OK).json(user);
+    }
+
+    // join a course
+    @Put('/join')
+    async joinCourse(@Res() res, @Query('email') email, @Query('joinCode') joinCode) {
+        const user = await this.usersService.joinCourse(email, joinCode);
+        if (!user) throw new NotFoundException('User does not exist!');
+        return res.status(HttpStatus.OK).json({
+            message: 'User has joined the course successfully',
+            user
+        });
+    }
+
+
     
 }
