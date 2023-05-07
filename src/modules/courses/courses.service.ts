@@ -5,7 +5,9 @@ import { UsersService } from '../users/users.service';
 import { CreateCourseDTO } from './dto/create-course.dto';
 import { CreatePostDto } from "./dto/create-post.dto";
 import { Course } from './interfaces/course.interface';
-
+import { video_info } from 'play-dl';
+const ytdl = require('ytdl-core');
+const yts = require('yt-search');
 
 @Injectable()
 export class CoursesService {
@@ -95,16 +97,17 @@ export class CoursesService {
         return course;
     }
 
+
+    
     async getCourseVideo(videoId: string): Promise<any> {
         console.log('Video ID: ' + videoId);
-        const ytdl = require('ytdl-core');
-
+    
         async function getMP4Url(videoId) {
             try {
-                const info = await ytdl.getInfo(videoId);
-                const formats = info.formats;
-                const mp4Formats = formats.filter((format) => format.container === 'mp4' && format.hasVideo && format.hasAudio);
-
+                const info = await video_info(videoId);
+                const formats = info.format;
+                const mp4Formats = formats.filter((format) => format.mimeType.includes('mp4'));
+    
                 if (mp4Formats.length > 0) {
                     // Choose the first available MP4 format
                     return mp4Formats[0].url;
@@ -117,11 +120,11 @@ export class CoursesService {
                 return null;
             }
         }
-
+    
         const url = await getMP4Url(videoId);
-
+    
         console.log('URL: ' + url);
-
+    
         return url;
     }
 
